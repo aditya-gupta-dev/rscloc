@@ -13,6 +13,14 @@ cargo install rscloc-cli --locked
 ```
 
 The crates.io package is named `rscloc-cli`; the installed command is `rscloc`.
+`--locked` uses the dependency versions recorded in the published lockfile.
+
+To upgrade an existing installation:
+
+```sh
+cargo install rscloc-cli --locked
+rscloc --version
+```
 
 ## Build from source
 
@@ -30,6 +38,55 @@ rscloc src --by-file
 rscloc . --format json
 rscloc --help
 ```
+
+Hidden files and directories are skipped by default. Include them when scanning
+your home directory with:
+
+```sh
+rscloc ~ --hidden
+```
+
+The `--hidden` flag is available starting with version `0.1.1`. You can also scan
+a hidden directory directly:
+
+```sh
+rscloc ~/.bun
+```
+
+Ignore-file rules and excluded directory names still apply. To also include
+directories such as `node_modules`, override the exclusions:
+
+```sh
+rscloc ~ --hidden --exclude-dir .git,.svn,.hg
+```
+
+This replaces the default exclusions. Binary files and files with unrecognized
+languages are skipped, and identical files are counted once unless you pass
+`--no-dedup`.
+
+### Options
+
+| Option | Behavior |
+| --- | --- |
+| `--hidden` | Include hidden files and directories; ignore-file rules still apply. |
+| `--by-file` | Report counts for individual files. |
+| `--format <FORMAT>` | Output `text` (default), `json`, `yaml`, or `csv`. |
+| `-j, --jobs <JOBS>` | Set the number of worker threads. |
+| `--no-recursion` | Scan only the immediate contents of each input directory. |
+| `--exclude-dir <DIRS>` | Replace excluded directories with a comma-separated list; defaults to `.git,node_modules,target,vendor,.svn,.hg,cloc-map`. |
+| `--include-ext <EXTS>` | Include only the listed comma-separated extensions. |
+| `--exclude-ext <EXTS>` | Skip the listed comma-separated extensions. |
+| `--no-dedup` | Count duplicate files separately. |
+| `-h, --help` | Show command-line help. |
+| `-V, --version` | Show the installed version. |
+
+## Release notes
+
+### 0.1.1
+
+- Add `--hidden` to include hidden files and directories in recursive scans.
+- Show the new option in command-line help.
+- Document home-directory scans, exclusions, and installation upgrades.
 
 ## 🚀 Speed Optimizations
 

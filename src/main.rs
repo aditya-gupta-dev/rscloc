@@ -31,13 +31,14 @@ fn main() -> anyhow::Result<()> {
         .excluded_extensions()
         .map(|exts| exts.into_iter().collect());
 
-    let files = rscloc::walker::discover(
-        &args.paths,
-        args.no_recursion,
-        &excluded_dirs,
-        included_exts.as_ref(),
-        excluded_exts.as_ref(),
-    )?;
+    let files = rscloc::walker::discover_with_options(&rscloc::walker::WalkOptions {
+        paths: &args.paths,
+        no_recursion: args.no_recursion,
+        excluded_dirs: &excluded_dirs,
+        included_exts: included_exts.as_ref(),
+        excluded_exts: excluded_exts.as_ref(),
+        skip_hidden: !args.hidden,
+    })?;
 
     let files = if args.no_dedup {
         files

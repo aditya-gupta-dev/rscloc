@@ -223,6 +223,34 @@ mod tests {
     }
 
     #[test]
+    fn test_discover_hidden_directories() {
+        let temp_dir = std::env::temp_dir().join("walker_test_hidden");
+        let _ = fs::remove_dir_all(&temp_dir);
+        let visible = create_test_file(&temp_dir, "visible.rs", b"fn main() {}\n");
+        let hidden = create_test_file(&temp_dir, ".bun/source.js", b"console.log(1);\n");
+        create_test_file(&temp_dir, ".bun/node_modules/lib.js", b"console.log(2);\n");
+
+        let paths = vec![temp_dir.clone()];
+        let excluded_dirs = HashSet::from(["node_modules".to_string()]);
+        let mut options = WalkOptions {
+            paths: &paths,
+            excluded_dirs: &excluded_dirs,
+            ..WalkOptions::default()
+        };
+
+        assert_eq!(
+            discover_with_options(&options).unwrap(),
+            vec![visible.clone()]
+        );
+        options.skip_hidden = false;
+        let mut expected = vec![visible, hidden];
+        expected.sort();
+        assert_eq!(discover_with_options(&options).unwrap(), expected);
+
+        fs::remove_dir_all(&temp_dir).unwrap();
+    }
+
+    #[test]
     fn test_discover_basic() {
         let temp_dir = std::env::temp_dir().join("walker_test_basic");
         let _ = fs::create_dir_all(&temp_dir);

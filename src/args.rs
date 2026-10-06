@@ -52,6 +52,12 @@ pub struct Args {
     pub no_recursion: bool,
 
     #[arg(
+        long,
+        help = "Include hidden files and directories (ignore rules still apply)"
+    )]
+    pub hidden: bool,
+
+    #[arg(
         long = "exclude-dir",
         default_value = ".git,node_modules,target,vendor,.svn,.hg,cloc-map"
     )]
@@ -107,6 +113,7 @@ mod tests {
         assert_eq!(args.format, Format::Text);
         assert!(!args.by_file);
         assert!(!args.no_recursion);
+        assert!(!args.hidden);
         assert!(!args.no_dedup);
         assert!(args.exclude_dir.contains(".git"));
         assert_eq!(args.include_ext, None);
@@ -125,6 +132,7 @@ mod tests {
             "json",
             "--by-file",
             "--no-recursion",
+            "--hidden",
             "--no-dedup",
             "--include-ext",
             "rs,c,h",
@@ -141,6 +149,7 @@ mod tests {
         assert_eq!(args.format, Format::Json);
         assert!(args.by_file);
         assert!(args.no_recursion);
+        assert!(args.hidden);
         assert!(args.no_dedup);
         assert_eq!(args.excluded_dirs(), vec!["build", "temp"]);
         assert_eq!(
