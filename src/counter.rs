@@ -165,7 +165,11 @@ pub fn count_lines(data: &[u8], syntax: CommentSyntax) -> Counts {
         };
 
         if is_blank(line) {
-            counts.blank += 1;
+            if quote_state != QuoteState::None {
+                counts.code += 1;
+            } else {
+                counts.blank += 1;
+            }
             continue;
         }
 

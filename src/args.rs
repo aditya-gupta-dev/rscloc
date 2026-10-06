@@ -29,7 +29,8 @@ impl std::fmt::Display for Format {
     author = "Aditya Gupta (https://github.com/aditya-gupta-dev)",
     version = concat!(
         env!("CARGO_PKG_VERSION"),
-        "\nCreator: Aditya Gupta (https://github.com/aditya-gupta-dev)\nRepository: https://github.com/aditya-gupta-dev/cloc-clone"
+        "\nCreator: Aditya Gupta (https://github.com/aditya-gupta-dev)\nRepository: ",
+        env!("CARGO_PKG_REPOSITORY")
     ),
     about = "Count Lines of Code",
     long_about = "A high-performance line counter and statistics tool rewritten in Rust.\n\nCreator: Aditya Gupta\nGitHub:  https://github.com/aditya-gupta-dev"
